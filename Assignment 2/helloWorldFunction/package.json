@@ -1,0 +1,10 @@
+{
+    "name": "hello-world-function",
+    "version": "1.0.0",
+    "description": "Simple Google Cloud Function - HelloWorldFunction",
+    "main": "index.js",
+    "scripts": {
+      "start": "node index.js"
+    },
+    "dependencies": {}
+  }
