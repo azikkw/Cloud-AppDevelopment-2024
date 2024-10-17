@@ -1,0 +1,6 @@
+runtime: python39
+handlers:
+  - url: /.*
+    script: auto
+env_variables:
+  API_KEY: "AIzaSyAa0paGkZS8yniRf4dEuOZjoErJH7_9VZM"

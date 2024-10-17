@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+*.pyo
+process_user_inputs/
+send_notification/

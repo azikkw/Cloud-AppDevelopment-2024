@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-todo-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-todo-app
+  template:
+    metadata:
+      labels:
+        app: flask-todo-app
+    spec:
+      containers:
+      - name: flask-todo-app
+        image: gcr.io/western-avatar-435512-h0/flask-todo-app:latest
+        ports:
+        - containerPort: 8080
+        env:
+          - name: API_KEY
+            value: "AIzaSyAa0paGkZS8yniRf4dEuOZjoErJH7_9VZM"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-todo-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: flask-todo-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

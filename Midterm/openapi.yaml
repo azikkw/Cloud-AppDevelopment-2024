@@ -1,0 +1,89 @@
+swagger: '2.0'
+info:
+  title: To-Do List API
+  description: Google Cloud Endpoints API for To-Do List.
+  version: 1.0.0
+host: "western-avatar-435512-h0.appspot.com"
+schemes:
+  - https
+paths:
+  /todos:
+    get:
+      summary: Get all todos
+      operationId: getTodos
+      responses:
+        '200':
+          description: Todos list
+        '404':
+          description: No todos found
+      security:
+        - api_key: []
+  /add:
+    post:
+      summary: Add a new task
+      operationId: addTodo
+      parameters:
+        - in: body
+          name: todo
+          required: true
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+              task:
+                type: string
+      responses:
+        '200':
+          description: Todo added
+        '400':
+          description: No task provided!
+      security:
+        - api_key: []
+  /update/{todo_id}:
+    get:
+      summary: Update a task
+      operationId: updateTodo
+      parameters:
+        - in: path
+          name: todo_id
+          type: string
+          required: true
+        - in: body
+          name: todo
+          required: true
+          schema:
+            type: object
+            properties:
+              task:
+                type: string
+      responses:
+        '200':
+          description: Todo updated
+        '400':
+          description: No task provided!
+        '404':
+          description: Todo not found
+      security:
+        - api_key: []
+  /delete/{todo_id}:
+    get:
+      summary: Delete a task
+      operationId: deleteTodo
+      parameters:
+        - in: path
+          name: todo_id
+          type: string
+          required: true
+      responses:
+        '200':
+          description: Todo deleted
+        '404':
+          description: Todo not found
+      security:
+        - api_key: []
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: api-key
+    in: header
