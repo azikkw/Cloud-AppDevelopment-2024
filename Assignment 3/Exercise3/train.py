@@ -1,49 +1,30 @@
-import tensorflow as tf 
-import pandas as pd 
- 
-# Load training data from Google Cloud Storage 
-data_path = 'gs://azat-ass3-bucket/Customer.csv' 
-data = pd.read_csv(data_path) 
- 
-# Assume your data has 'features' and 'label' columns 
-X = data['features'].values.reshape(-1, 1) 
-y = data['label'].values 
- 
-# Create a simple model 
-model = tf.keras.Sequential([ 
-    tf.keras.layers.Dense(1, input_shape=(1,)) 
-]) 
- 
-model.compile(optimizer='adam', loss='mean_squared_error') 
- 
-# Train the model 
-model.fit(X, y, epochs=10) 
- 
-# Save the trained model to GCS 
-model.save('gs://cloud-app-dev/trained_model')
+import pandas as pd
+import tensorflow as tf
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import StandardScaler
 
+data = pd.read_csv('Customer.csv')
 
+data.dropna(inplace=True)
 
+label_encoder = LabelEncoder()
+data['Segment'] = label_encoder.fit_transform(data['Segment'])
 
-# import tensorflow as tf
-# import numpy as np
+x = data[['Segment']]
+y = data['Age']
 
-# X_train = np.random.rand(1000, 784) 
-# y_train = np.random.randint(0, 10, size=(1000,))
+scaler = StandardScaler()
+x_scaled = scaler.fit_transform(x)
+x_train, X_test, y_train, y_test = train_test_split(x_scaled, y, test_size=0.2, random_state=42)
 
-# def create_model():
-#     model = tf.keras.Sequential([
-#         tf.keras.layers.Dense(10, activation='relu', input_shape=(784,)),
-#         tf.keras.layers.Dense(10, activation='softmax')
-#     ])
-#     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-#     return model
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(64, activation='relu', input_shape=(x_train.shape[1],)),
+    tf.keras.layers.Dense(32, activation='relu'),
+    tf.keras.layers.Dense(1)
+])
 
-# def main():
-#     model = create_model()
-#     train_data = tf.data.Dataset.from_tensor_slices((X_train, y_train)).batch(32)
-#     model.fit(train_data, epochs=5)
-#     model.save('gs://azat-ass3-bucket/Customer.csv')
+model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mae'])
+model.fit(x_train, y_train, epochs=50, batch_size=16, validation_split=0.1)
 
-# if __name__ == '__main__':
-#     main()
+model.save('my_model.keras')
