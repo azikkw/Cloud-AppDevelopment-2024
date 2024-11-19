@@ -23,9 +23,9 @@ def add_todo():
 # Update existed todo in To-Do List
 @app.route('/update/<string:todo_id>', methods=['PUT'])
 def update_todo(todo_id):
-    update_data = request.get_json()
+    update_d = request.get_json()
     result = next((todo for todo in todos if todo['id'] == todo_id), None)
-    result['task'] = update_data['task']
+    result['task'] = update_d['task']
     return jsonify(result)
 
 # Delete task from To-Do List
