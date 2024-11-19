@@ -1,0 +1,29 @@
+name: OWASP ZAP Scan
+
+on:
+  push:
+    branches:
+      - main  # Укажите ветку, для которой нужно запускать сканирование
+
+jobs:
+  zap_scan:
+    runs-on: ubuntu-latest  # Указываем, что будем использовать Ubuntu для выполнения
+
+    steps:
+      # Шаг для клонирования репозитория
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Шаг для установки и запуска OWASP ZAP
+      - name: Set up OWASP ZAP
+        uses: zaproxy/action-full-scan@v0.1.0
+        with:
+          target: "http://your-app-url.com"  # Укажите URL вашего приложения для сканирования
+          args: "-t http://your-app-url.com -r zap_report.html"  # Генерация отчета в формате HTML
+
+      # Шаг для загрузки отчета о сканировании
+      - name: Upload OWASP ZAP Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: zap-report
+          path: zap_report.html  # Путь к отчету OWASP ZAP
