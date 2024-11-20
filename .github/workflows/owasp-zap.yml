@@ -22,7 +22,7 @@ jobs:
       - name: Set up OWASP ZAP
         uses: zaproxy/action-full-scan@v0.1.0
         with:
-          target: "https://cloud-app-dev-amen.uc.r.appspot.com/"
+          target: "https://cloud-app-dev-amen.uc.r.appspot.com"
           docker_name: "owasp/zap2docker-stable"
           cmd_options: "-r zap_report.html"
 
