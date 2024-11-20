@@ -3,27 +3,24 @@ name: OWASP ZAP Scan
 on:
   push:
     branches:
-      - main  # Укажите ветку, для которой нужно запускать сканирование
+      - master
 
 jobs:
   zap_scan:
-    runs-on: ubuntu-latest  # Указываем, что будем использовать Ubuntu для выполнения
+    runs-on: ubuntu-latest
 
     steps:
-      # Шаг для клонирования репозитория
       - name: Checkout code
         uses: actions/checkout@v2
-
-      # Шаг для установки и запуска OWASP ZAP
+        
       - name: Set up OWASP ZAP
         uses: zaproxy/action-full-scan@v0.1.0
         with:
-          target: "https://cloud-app-dev-amen.uc.r.appspot.com"  # Укажите URL вашего приложения для сканирования
-          args: "-t https://cloud-app-dev-amen.uc.r.appspot.com -r zap_report.html"  # Генерация отчета в формате HTML
+          target: "http://34.56.17.107/"
+          args: "-t http://34.56.17.107/ -r zap_report.html"
 
-      # Шаг для загрузки отчета о сканировании
       - name: Upload OWASP ZAP Report
         uses: actions/upload-artifact@v3
         with:
           name: zap-report
-          path: zap_report.html  # Путь к отчету OWASP ZAP
+          path: zap_report.html
