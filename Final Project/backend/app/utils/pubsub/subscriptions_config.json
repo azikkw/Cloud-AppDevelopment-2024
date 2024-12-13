@@ -1,0 +1,25 @@
+{
+  "subscriptions": [
+    {
+      "name": "users-registration-topic-sub",
+      "project_id": "cloud-app-dev-amen",
+      "topic": "users-registration-topic"
+    },
+    {
+      "name": "notification-topic-sub",
+      "project_id": "cloud-app-dev-amen",
+      "topic": "notification-topic"
+    },
+    {
+      "name": "user-notifications-topic-sub",
+      "project_id": "cloud-app-dev-amen",
+      "topic": "user-notifications-topic"
+    },
+    {
+      "name": "change-event-capacity-topic-sub",
+      "project_id": "cloud-app-dev-amen",
+      "topic": "change-event-capacity-topic"
+    }
+  ]
+}
+  

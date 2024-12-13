@@ -1,0 +1,7 @@
+runtime: python39
+
+entrypoint: gunicorn --bind :8080 run:app
+
+handlers:
+  - url: /.*
+    script: auto

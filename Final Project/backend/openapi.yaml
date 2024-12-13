@@ -1,0 +1,556 @@
+swagger: '2.0'
+info:
+  title: Event Management API
+  description: API for managing users, events, notifications, and registrations.
+  version: 1.0.0
+host: "cloud-app-dev-amen.appspot.com"
+schemes:
+  - https
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      operationId: registerUser
+      parameters:
+        - in: body
+          name: user
+          required: true
+          schema:
+            type: object
+            required:
+              - email
+              - password
+              - username
+              - first_name
+              - last_name
+            properties:
+              email:
+                type: string
+                format: email
+              password:
+                type: string
+              username:
+                type: string
+              first_name:
+                type: string
+              last_name:
+                type: string
+      responses:
+        '201':
+          description: User registered successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              uid:
+                type: string
+        '400':
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+  /events:
+    get:
+      summary: Get all events excluding those created by the current user
+      operationId: getAllEvents
+      security:
+        - firebaseAuth: []
+      responses:
+        '200':
+          description: List of events
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                title:
+                  type: string
+                description:
+                  type: string
+                date_time:
+                  type: string
+                  format: date-time
+                location:
+                  type: string
+                capacity:
+                  type: integer
+                price:
+                  type: number
+                  format: float
+                created_by:
+                  type: string
+                created_at:
+                  type: string
+                  format: date-time
+                updated_at:
+                  type: string
+                  format: date-time
+        '500':
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+    post:
+      summary: Create a new event
+      operationId: createEvent
+      security:
+        - firebaseAuth: []
+      parameters:
+        - in: body
+          name: event
+          required: true
+          schema:
+            type: object
+            required:
+              - title
+              - description
+              - date_time
+              - location
+              - capacity
+              - price
+              - created_by
+            properties:
+              title:
+                type: string
+              description:
+                type: string
+              date_time:
+                type: string
+                format: date-time
+              location:
+                type: string
+              capacity:
+                type: integer
+              price:
+                type: number
+                format: float
+              created_by:
+                type: string
+      responses:
+        '201':
+          description: Event created successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              title:
+                type: string
+        '400':
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+  /events/{event_id}:
+    get:
+      summary: Get event by ID
+      operationId: getEventById
+      parameters:
+        - name: event_id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Event details
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+              title:
+                type: string
+              description:
+                type: string
+              date_time:
+                type: string
+                format: date-time
+              location:
+                type: string
+              capacity:
+                type: integer
+              price:
+                type: number
+                format: float
+              created_by:
+                type: string
+              created_at:
+                type: string
+                format: date-time
+              updated_at:
+                type: string
+                format: date-time
+        '404':
+          description: Event not found
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+    delete:
+      summary: Delete event by ID
+      operationId: deleteEventById
+      parameters:
+        - name: event_id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Event deleted successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        '404':
+          description: Event not found
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+    put:
+      summary: Update event by ID
+      operationId: updateEventById
+      parameters:
+        - name: event_id
+          in: path
+          required: true
+          type: string
+        - in: body
+          name: event
+          required: true
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+              description:
+                type: string
+              date_time:
+                type: string
+                format: date-time
+              location:
+                type: string
+              capacity:
+                type: integer
+              price:
+                type: number
+                format: float
+      responses:
+        '200':
+          description: Event updated successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        '404':
+          description: Event not found
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+  /registrations:
+    post:
+      summary: Add a registration for an event
+      operationId: addRegistrationForEvent
+      parameters:
+        - in: body
+          name: registration
+          required: true
+          schema:
+            type: object
+            required:
+              - user_id
+              - event_id
+              - event_creator
+            properties:
+              user_id:
+                type: string
+              event_id:
+                type: string
+              event_creator:
+                type: string
+      responses:
+        '201':
+          description: Registration added successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              id:
+                type: string
+        '400':
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+    get:
+      summary: Get all registrations for an event
+      operationId: getAllRegistrations
+      parameters:
+        - in: query
+          name: event_id
+          required: true
+          type: string
+          description: ID of the event to get registrations for
+      responses:
+        '200':
+          description: List of registrations
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                event_id:
+                  type: string
+                event_creator:
+                  type: string
+        '400':
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+    delete:
+      summary: Delete a registration for an event
+      operationId: deleteRegistration
+      parameters:
+        - in: path
+          name: registration_id
+          required: true
+          type: string
+          description: ID of the registration to delete
+      responses:
+        '200':
+          description: Registration deleted successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        '400':
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '404':
+          description: Registration not found
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+  
+  /reviews:
+    post:
+      summary: Submit a review for an event
+      operationId: addReview
+      security:
+        - firebaseAuth: []
+      parameters:
+        - in: body
+          name: review
+          required: true
+          schema:
+            type: object
+            required:
+              - user_id
+              - event_id
+              - rating
+              - comment
+            properties:
+              user_id:
+                type: string
+              event_id:
+                type: string
+              rating:
+                type: integer
+                minimum: 1
+                maximum: 5
+              comment:
+                type: string
+      responses:
+        '201':
+          description: Review submitted successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              review_id:
+                type: string
+        '400':
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+  /reviews/{review_id}:
+    get:
+      summary: Get a review by ID
+      operationId: getReviewById
+      parameters:
+        - name: review_id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Review details
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+              user_id:
+                type: string
+              event_id:
+                type: string
+              rating:
+                type: integer
+              comment:
+                type: string
+        '404':
+          description: Review not found
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+  /notifications:
+    get:
+      summary: Get notifications for the current user
+      operationId: getNotifications
+      security:
+        - firebaseAuth: []
+      responses:
+        '200':
+          description: List of notifications
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                message:
+                  type: string
+                date:
+                  type: string
+                  format: date-time
+        '500':
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+securityDefinitions:
+  firebaseAuth:
+    type: apiKey
+    in: header
+    name: Authorization
+    description: Firebase Authentication Bearer token
